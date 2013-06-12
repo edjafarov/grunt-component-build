@@ -73,7 +73,11 @@ module.exports = function(grunt) {
     builder.addLookup(path.join(dir, 'components'));
 
     // The component config
-    var config = require(path.join(dir, 'component.json'));
+    var componentJsonPath = path.join(dir, 'component.json');
+    var config = {};
+    if(path.existsSync(componentJsonPath)){
+      config = require(componentJsonPath);
+    }
 
     if (config.paths) {
       config.paths = config.paths.map(function(p) {
