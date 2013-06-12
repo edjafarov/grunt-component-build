@@ -37,6 +37,26 @@ module.exports = function(grunt) {
         grunt.log.writeln(str);
       }
     };
+    
+    if(opts.config){
+      var compConfig = {
+        name: opts.config.name,
+        main: opts.config.main,
+        version: opts.config.version,
+        license: opts.config.license,
+        dependencies: opts.config.dependencies
+      };
+      ['images','fonts','scripts','styles'].forEach(function(asset){
+        if(opts.config[asset]){
+          compConfig[asset] = grunt.file.expand(opts.config[asset]);
+        }
+      });
+      var json = Builder.prototype.json;
+      Builder.prototype.json = function(){
+        Builder.prototype.json = json;
+        return compConfig;
+      }
+    }
 
     // The component builder
     var builder = new Builder(dir);
@@ -74,7 +94,7 @@ module.exports = function(grunt) {
 
     // The component config
     var componentJsonPath = path.join(dir, 'component.json');
-    var config = {};
+    var config = builder.config || {};
     if(path.existsSync(componentJsonPath)){
       config = require(componentJsonPath);
     }
@@ -105,7 +125,7 @@ module.exports = function(grunt) {
     }
 
     var start = new Date();
-
+    
     // Build the component
     builder.build(function(err, obj) {
       if (err) {
