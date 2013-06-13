@@ -95,7 +95,7 @@ module.exports = function(grunt) {
     // The component config
     var componentJsonPath = path.join(dir, 'component.json');
     var config = builder.config || {};
-    if(path.existsSync(componentJsonPath)){
+    if(fs.existsSync(componentJsonPath)){
       config = require(componentJsonPath);
     }
 
