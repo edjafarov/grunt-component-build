@@ -46,7 +46,7 @@ module.exports = function(grunt) {
         license: opts.config.license,
         dependencies: opts.config.dependencies
       };
-      ['images','fonts','scripts','styles'].forEach(function(asset){
+      ['images','fonts','scripts','styles','templates'].forEach(function(asset){
         if(opts.config[asset]){
           compConfig[asset] = grunt.file.expand(opts.config[asset]);
         }
