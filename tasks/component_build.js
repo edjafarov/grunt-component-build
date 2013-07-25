@@ -25,19 +25,18 @@ module.exports = function(grunt) {
 
   grunt.registerMultiTask('component_constructor', 'component-build for grunt.', function() {
     var self = this;
-    var opts = this.data;
+    var opts = this.options();
     var name = opts.name || this.target;
     var verbose = opts.verbose;
     var dir = path.resolve(opts.base || '');
-    var output = path.resolve(this.data.output);
+    var output = path.resolve(opts.output);
     var done = this.async();
-
+    console.log(this.options({}));
     var verboseLog = function(str) {
       if (verbose) {
         grunt.log.writeln(str);
       }
     };
-    
     if(opts.config){
       var compConfig = {
         name: opts.config.name,
@@ -128,15 +127,24 @@ module.exports = function(grunt) {
 
       verboseLog('duration: ' + (new Date() - start) + 'ms');
 
-      // Write CSS file
+      writeCSS(obj);
+      writeJS(obj);
+
+      done();
+    });
+
+    function writeCSS(obj){
+       // Write CSS file
       if (opts.styles !== false) {
         var cssFile = path.join(output, name + '.css');
         grunt.file.write(cssFile, obj.css.trim());
 
-        verboseLog('write: ' + path.join(self.data.output, name + '.css') + ' (' + (obj.css.trim().length / 1024 | 0) + 'kb)');
+        verboseLog('write: ' + path.join(opts.output, name + '.css') + ' (' + (obj.css.trim().length / 1024 | 0) + 'kb)');
       }
+    }
 
-      // Write JS file
+    function writeJS(obj){
+        // Write JS file
       if (opts.scripts !== false) {
         var jsFile = path.join(output, name + '.js');
         var size = 0;
@@ -155,10 +163,8 @@ module.exports = function(grunt) {
           size = obj.require.length + obj.js.length;
         }
 
-        verboseLog( 'write: ' + path.join(self.data.output, name + '.js') + ' (' + ( size / 1024 | 0 ) + 'kb)' );
+        verboseLog( 'write: ' + path.join(opts.output, name + '.js') + ' (' + ( size / 1024 | 0 ) + 'kb)' );
       }
-
-      done();
-    });
+    }
   });
 };

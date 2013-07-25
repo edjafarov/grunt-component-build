@@ -37,26 +37,32 @@ module.exports = function(grunt) {
     },
 
     // Configuration to be run (and then tested).
-    component_build: {
+    component_constructor: {
       test_dev: {
-        base: './test/fixtures/src',
-        output: './tmp/dev',
-        name: 'dev',
-        dev: true,
-        sourceUrls: true
+        options:{
+          base: './test/fixtures/src',
+          output: './tmp/dev',
+          name: 'dev',
+          dev: true,
+          sourceUrls: true
+        }
       },
       test_prod: {
-        base: './test/fixtures/src',
-        output: './tmp/prod',
-        name: 'prod',
-        styles: false
+        options:{
+          base: './test/fixtures/src',
+          output: './tmp/prod',
+          name: 'prod',
+          styles: false
+        }
       },
       test_standalone: {
-        base: './test/fixtures/src',
-        output: './tmp/standalone',
-        name: 'standalone',
-        standalone: '$',
-        styles: false
+        options:{
+          base: './test/fixtures/src',
+          output: './tmp/standalone',
+          name: 'standalone',
+          standalone: '$',
+          styles: false
+        }
       }
     }
   });
@@ -72,7 +78,7 @@ module.exports = function(grunt) {
 
   // Whenever the "test" task is run, first clean the "tmp" dir, then run this
   // plugin's task(s), then test the result.
-  grunt.registerTask('test', ['clean', 'component_build', 'nodeunit']);
+  grunt.registerTask('test', ['clean', 'component_constructor', 'nodeunit']);
 
   // Default task.
   grunt.registerTask('default', ['jshint', 'test']);
