@@ -1,7 +1,7 @@
 {
   "name": "grunt-component-constructor",
   "description": "Build and watch Components",
-  "version": "0.2.9",
+  "version": "0.2.11",
   "homepage": "https://github.com/edjafarov/grunt-component-constructor",
   "author": {
     "name": "Eldar Djafarov",
@@ -29,7 +29,8 @@
     "test": "node ./node_modules/.bin/grunt test"
   },
   "dependencies": {
-    "component-builder": "0.9.x"
+    "component-builder": "0.9.x",
+    "component-require": "0.2.2"
   },
   "devDependencies": {
     "grunt": "~0.4.0",

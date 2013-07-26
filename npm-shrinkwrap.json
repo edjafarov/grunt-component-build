@@ -1,0 +1,57 @@
+{
+  "name": "grunt-component-constructor",
+  "version": "0.2.10",
+  "dependencies": {
+    "component-builder": {
+      "version": "0.9.0",
+      "from": "component-builder@0.9.x",
+      "resolved": "https://registry.npmjs.org/component-builder/-/component-builder-0.9.0.tgz",
+      "dependencies": {
+        "component-require": {
+          "version": "0.2.2",
+          "from": "component-require@0.2.2",
+          "resolved": "https://registry.npmjs.org/component-require/-/component-require-0.2.2.tgz"
+        },
+        "batch": {
+          "version": "0.2.1",
+          "from": "batch@0.2.1",
+          "resolved": "https://registry.npmjs.org/batch/-/batch-0.2.1.tgz"
+        },
+        "mkdirp": {
+          "version": "0.3.4",
+          "from": "mkdirp@0.3.4",
+          "resolved": "https://registry.npmjs.org/mkdirp/-/mkdirp-0.3.4.tgz"
+        },
+        "debug": {
+          "version": "0.7.2",
+          "from": "debug@*",
+          "resolved": "https://registry.npmjs.org/debug/-/debug-0.7.2.tgz"
+        },
+        "better-assert": {
+          "version": "0.1.0",
+          "from": "better-assert@~0.1.0",
+          "dependencies": {
+            "callsite": {
+              "version": "1.0.0",
+              "from": "callsite@*"
+            }
+          }
+        },
+        "cp": {
+          "version": "0.1.1",
+          "from": "cp@~0.1.0",
+          "resolved": "https://registry.npmjs.org/cp/-/cp-0.1.1.tgz"
+        },
+        "string-to-js": {
+          "version": "0.0.1",
+          "from": "string-to-js@0.0.1",
+          "resolved": "https://registry.npmjs.org/string-to-js/-/string-to-js-0.0.1.tgz"
+        }
+      }
+    },
+    "component-require": {
+      "version": "0.2.2",
+      "from": "component-require@0.2.2"
+    }
+  }
+}

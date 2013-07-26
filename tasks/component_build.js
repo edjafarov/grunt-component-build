@@ -13,6 +13,7 @@ var Builder = require('component-builder');
 var fs = require('fs');
 var path = require('path');
 var template = fs.readFileSync(__dirname + '/../lib/require.tmpl').toString();
+var requirejs = require('component-require');
 
 module.exports = function(grunt) {
 
@@ -31,7 +32,7 @@ module.exports = function(grunt) {
     var dir = path.resolve(opts.base || '');
     var output = path.resolve(opts.output);
     var done = this.async();
-    console.log(this.options({}));
+
     var verboseLog = function(str) {
       if (verbose) {
         grunt.log.writeln(str);
@@ -117,29 +118,60 @@ module.exports = function(grunt) {
     }
 
     var start = new Date();
-    
-    // Build the component
-    builder.build(function(err, obj) {
-      if (err) {
-        grunt.log.error(err.message);
-        grunt.fatal(err.message);
-      }
 
-      verboseLog('duration: ' + (new Date() - start) + 'ms');
+    if(!opts.assetType){
+      // Build the component
+      builder.build(function(err, obj) {
+        if (err) {
+          grunt.log.error(err.message);
+          grunt.fatal(err.message);
+        }
 
-      writeCSS(obj);
-      writeJS(obj);
+        verboseLog('duration: ' + (new Date() - start) + 'ms');
 
-      done();
-    });
+        writeCSS(obj.css);
+        writeJS(obj.js);
+
+        done();
+      });
+    }
+    if(opts.assetType == 'styles'){
+      builder.buildStyles(function(err, obj){
+        if (err) {
+          grunt.log.error(err.message);
+          grunt.fatal(err.message);
+        }
+       writeCSS(obj);
+       done();
+      });
+    }
+
+    if(opts.assetType == 'templates' || opts.assetType == 'scripts'){
+      builder.buildScripts(function(err, scripts){
+        builder.buildAliases(function(err, aliases){
+          builder.buildTemplates(function(err, templates){
+            var obj = [scripts, aliases, templates, builder._js].filter(empty).join('\n');
+            if (err) {
+              grunt.log.error(err.message);
+              grunt.fatal(err.message);
+            }
+            writeJS(obj);
+            done();
+          });
+        })
+      });
+    }
+
+    function empty(s) {
+      return '' != s;
+    }
 
     function writeCSS(obj){
        // Write CSS file
       if (opts.styles !== false) {
         var cssFile = path.join(output, name + '.css');
-        grunt.file.write(cssFile, obj.css.trim());
-
-        verboseLog('write: ' + path.join(opts.output, name + '.css') + ' (' + (obj.css.trim().length / 1024 | 0) + 'kb)');
+        grunt.file.write(cssFile, obj.trim());
+        verboseLog('write: ' + path.join(opts.output, name + '.css') + ' (' + (obj.trim().length / 1024 | 0) + 'kb)');
       }
     }
 
@@ -148,21 +180,8 @@ module.exports = function(grunt) {
       if (opts.scripts !== false) {
         var jsFile = path.join(output, name + '.js');
         var size = 0;
-        if (opts.standalone) {
-          // Defines the name of the global variable (window[opts.name]).
-          // By default we use the name defined in the component.json,
-          // else we use the `standalone` option defined in the Gruntfile.
-          obj.name = (typeof opts.standalone === 'string') ? opts.standalone : config.name;
-          obj.config = config;
-
-          var string = grunt.template.process(template, { data: obj });
-          grunt.file.write(jsFile, string);
-          size = string.length;
-        } else {
-          grunt.file.write(jsFile, obj.require + obj.js);
-          size = obj.require.length + obj.js.length;
-        }
-
+        grunt.file.write(jsFile, requirejs + obj);
+        size = requirejs.length + obj.length;
         verboseLog( 'write: ' + path.join(opts.output, name + '.js') + ' (' + ( size / 1024 | 0 ) + 'kb)' );
       }
     }
