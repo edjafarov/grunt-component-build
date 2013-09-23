@@ -13,7 +13,10 @@ var Builder = require('component-builder');
 var fs = require('fs');
 var path = require('path');
 var template = fs.readFileSync(__dirname + '/../lib/require.tmpl').toString();
+var standalonetpl = fs.readFileSync(__dirname + '/../lib/standalone.tmpl').toString();
+
 var requirejs = require('component-require');
+var head = fs.readFileSync(__dirname + '/../lib/head.tmpl').toString();
 
 module.exports = function(grunt) {
 
@@ -42,11 +45,13 @@ module.exports = function(grunt) {
       var compConfig = {
         name: opts.config.name,
         main: opts.config.main,
-        version: opts.config.version,
-        license: opts.config.license,
-        dependencies: opts.config.dependencies
+        author: opts.config.author ? ('@' + opts.config.author) : '',
+        version: opts.config.version || '0.0.0',
+        license: opts.config.license || '',
+        dependencies: opts.config.dependencies,
+        description: opts.config.description || ''
       };
-      ['images','fonts','scripts','styles','templates'].forEach(function(asset){
+      ['images','fonts','scripts','styles','templates','files'].forEach(function(asset){
         if(opts.config[asset]){
           compConfig[asset] = grunt.file.expand(opts.config[asset]);
         }
@@ -95,6 +100,7 @@ module.exports = function(grunt) {
     // The component config
     var componentJsonPath = path.join(dir, 'component.json');
     var config = builder.config || {};
+    
     if(fs.existsSync(componentJsonPath)){
       config = require(componentJsonPath);
     }
@@ -170,7 +176,8 @@ module.exports = function(grunt) {
        // Write CSS file
       if (opts.styles !== false) {
         var cssFile = path.join(output, name + '.css');
-        grunt.file.write(cssFile, obj.trim());
+        var header = grunt.template.process(head, { data: config });
+        grunt.file.write(cssFile, header + obj.trim());
         verboseLog('write: ' + path.join(opts.output, name + '.css') + ' (' + (obj.trim().length / 1024 | 0) + 'kb)');
       }
     }
@@ -180,7 +187,16 @@ module.exports = function(grunt) {
       if (opts.scripts !== false) {
         var jsFile = path.join(output, name + '.js');
         var size = 0;
-        grunt.file.write(jsFile, requirejs + obj);
+        if(opts.standalone){
+          config.require = requirejs;
+          config.js = obj;
+          config.pkgname = config.name + "/" + config.main;
+          obj = grunt.template.process(standalonetpl, { data: config });
+        }else{
+          obj = requirejs + obj;
+        }
+        var header = grunt.template.process(head, { data: config });
+        grunt.file.write(jsFile, header +  obj);
         size = requirejs.length + obj.length;
         verboseLog( 'write: ' + path.join(opts.output, name + '.js') + ' (' + ( size / 1024 | 0 ) + 'kb)' );
       }

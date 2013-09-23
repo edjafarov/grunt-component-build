@@ -1,0 +1,19 @@
+;(function(win){
+<%= require %>
+<%= js %>
+require("<%= pkgname %>").version = "<%= version %>";
+if (typeof exports == "object") {
+  module.exports = require("<%= pkgname %>");
+} else if (typeof define == "function" && define.amd) {
+  define(function(){ return require("<%= pkgname %>"); });
+} else {
+  var oldLib;
+  if(win["<%= name %>"]){
+    oldLib = win["<%= name %>"];
+    require("<%= pkgname %>").noConflict = function(){
+      win["<%= name %>"] = oldLib;
+      return require("<%= pkgname %>");
+    }
+  }
+  win["<%= name %>"] = require("<%= pkgname %>");
+}})(window);

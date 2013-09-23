@@ -1,7 +1,7 @@
 {
   "name": "grunt-component-constructor",
   "description": "Build and watch Components",
-  "version": "0.2.11",
+  "version": "0.2.12",
   "homepage": "https://github.com/edjafarov/grunt-component-constructor",
   "author": {
     "name": "Eldar Djafarov",
