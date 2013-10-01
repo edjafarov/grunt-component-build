@@ -42,15 +42,12 @@ module.exports = function(grunt) {
       }
     };
     if(opts.config){
-      var compConfig = {
-        name: opts.config.name,
-        main: opts.config.main,
-        author: opts.config.author ? ('@' + opts.config.author) : '',
-        version: opts.config.version || '0.0.0',
-        license: opts.config.license || '',
-        dependencies: opts.config.dependencies,
-        description: opts.config.description || ''
-      };
+      var compConfig = opts.config;
+      compConfig.author = opts.config.author ? ('@' + opts.config.author) : '';
+      compConfig.version = opts.config.version || '0.0.0';
+      compConfig.license = opts.config.license || '';
+      compConfig.description = opts.config.description || '';
+
       ['images','fonts','scripts','styles','templates','files'].forEach(function(asset){
         if(opts.config[asset]){
           compConfig[asset] = grunt.file.expand(opts.config[asset]);
